@@ -197,12 +197,18 @@ class HttpClient implements HttpClientInterface
             $path .= utf8_encode(http_build_query($body, '', '&'));
         }
 
-        return $this->client->createRequest(
+        $request = $this->client->createRequest(
             $httpMethod,
             $path,
             array_merge($this->headers, $headers),
             $body,
             $options
         );
+
+        if (isset($body['file'])) {
+            $request = $request->addPostFiles(array('file' => $body["file"]));
+        }
+
+        return $request;
     }
 }
